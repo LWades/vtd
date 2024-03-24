@@ -124,7 +124,8 @@ class Mlp(nn.Module):
 class Embeddings(nn.Module):
     """Construct the embeddings from patch, position embeddings.
     """
-    def __init__(self, config, img_size, in_channels=3):
+    # def __init__(self, config, img_size, in_channels=3):
+    def __init__(self, config, img_size, in_channels=1):
         super(Embeddings, self).__init__()
         self.hybrid = None
         img_size = _pair(img_size)
@@ -337,6 +338,9 @@ class VisionTransformer(nn.Module):
 
 
 CONFIGS = {
+    'Sur_3': configs.get_sur3_config(),
+    'Sur_5': configs.get_sur5_config(),
+    'Sur_7': configs.get_sur7_config(),
     'ViT-B_16': configs.get_b16_config(),
     'ViT-B_32': configs.get_b32_config(),
     'ViT-L_16': configs.get_l16_config(),
