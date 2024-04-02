@@ -15,7 +15,7 @@ console = Console()
 # key_syndrome = 'syndromes'
 key_syndrome = 'image_syndromes'
 key_logical_error = 'logical_errors'
-pwd_trndt = '/root/qecGPT/qec/trndt/'
+pwd_trndt = '/root/Surface_code_and_Toric_code/sur_pe/'
 
 
 def log(info):
@@ -93,7 +93,8 @@ def get_loader(args):
         # testdata = sur_preprocess(testdata)
         # testset = SurDataset(testdata)
         # --------------h5py-----------------
-        filename_train_data = pwd_trndt + '{}_d{}_p{}_trnsz{}_imgsdr.hdf5'.format(args.c_type, args.d, format(args.p, '.3f'), args.trnsz)
+        filename_train_data = pwd_trndt + '{}_d{}_p{}_trnsz{}_imgsdr_seed{}.hdf5'.format(args.c_type, args.d, format(args.p, '.3f'), args.trnsz, args.train_seed)
+        log("train_data: {}".format(filename_train_data))
         with h5py.File(filename_train_data, 'r') as f:
             train_syndrome = f[key_syndrome][()]
             log("type train_syndrome: {}".format(type(train_syndrome)))
@@ -103,7 +104,8 @@ def get_loader(args):
             log("train_logical_error[0]: {}".format(train_logical_error[0]))
             log("train_logical_error[0] type: {}".format(type(train_logical_error[0])))
             trainset = SurDataset({key_syndrome: train_syndrome_post, key_logical_error: train_logical_error})
-        filename_test_data = pwd_trndt + '{}_d{}_p{}_trnsz{}_imgsdr_eval.hdf5'.format(args.c_type, args.d, format(args.p, '.3f'), 10000)
+        filename_test_data = pwd_trndt + '{}_d{}_p{}_trnsz{}_imgsdr_eval_seed{}.hdf5'.format(args.c_type, args.d, format(args.p, '.3f'), 10000, args.eval_seed)
+        log("test_data: {}".format(filename_test_data))
         with h5py.File(filename_test_data, 'r') as f:
             test_syndrome = f[key_syndrome][()]
             test_syndrome_post = np.expand_dims(test_syndrome, axis=1)

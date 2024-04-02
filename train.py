@@ -315,6 +315,10 @@ def main():
                         help="local_rank for distributed training on gpus")
     parser.add_argument('--seed', type=int, default=42,
                         help="random seed for initialization")
+    parser.add_argument('--eval_seed', type=int, default=1,
+                        help="random seed for initialization")
+    parser.add_argument('--train_seed', type=int, default=0,
+                        help="random seed for initialization")
     parser.add_argument('--gradient_accumulation_steps', type=int, default=1,
                         help="Number of updates steps to accumulate before performing a backward/update pass.")
     parser.add_argument('--fp16', action='store_true',
@@ -343,8 +347,8 @@ def main():
     args = parser.parse_args()
 
     wandb.init(
-        project="ViT for Surface code",
-        name='d{}_p{}_ptc{}_ep{}'.format(args.d, args.p, CONFIGS['Sur_{}'.format(args.d)].patches['size'][0],
+        project="work02",
+        name='vit_d{}_p{}_ptc{}_ep{}'.format(args.d, args.p, CONFIGS['Sur_{}'.format(args.d)].patches['size'][0],
                                          args.epoch),
         config={
             'd': args.d,
@@ -435,3 +439,5 @@ if __name__ == "__main__":
 # nohup python3 train.py --name sur-5-0.05-1x1-1e7 --dataset sur --model_type Sur_5 --epoch 5 --d 5 --p 0.050 --img_size 9 --fp16 --fp16_opt_level O2 > train_log/train_5_0.05_1x1_ep5.log &
 # nohup python3 train.py --name sur-5-0.08-1x1-1e7 --dataset sur --model_type Sur_5 --epoch 5 --d 5 --p 0.080 --img_size 9 --fp16 --fp16_opt_level O2 --gpu 0 > train_log/train_5_0.08_1x1_ep5.log &
 # nohup python3 train.py --name sur-5-0.17-1x1-1e7-ep8 --dataset sur --model_type Sur_5 --epoch 8 --d 5 --p 0.170 --img_size 9 --fp16 --fp16_opt_level O2 > train_log/train_5_0.17_1x1_ep8.log &
+# nohup python3 train.py --name sur-3-0.01-1e7 --dataset sur --model_type Sur_3 --d 3 --p 0.01 --img_size 5 --eval_seed 1 --fp16 --fp16_opt_level O2 > logs/sur-3-0.01-1e7.log &
+# nohup python3 train.py --name sur-3-0.01-1e7 --dataset sur --model_type Sur_3 --d 3 --p 0.01 --epoch 5 --img_size 5 --eval_seed 1 --fp16 --fp16_opt_level O2 > logs/sur-3-0.01-1e7.log &
