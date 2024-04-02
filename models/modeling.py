@@ -341,6 +341,7 @@ CONFIGS = {
     'Sur_3': configs.get_sur3_config(),
     'Sur_5': configs.get_sur5_config(),
     'Sur_7': configs.get_sur7_config(),
+    'Sur_11': configs.get_sur11_config(),
     'ViT-B_16': configs.get_b16_config(),
     'ViT-B_32': configs.get_b32_config(),
     'ViT-L_16': configs.get_l16_config(),

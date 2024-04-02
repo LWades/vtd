@@ -79,6 +79,22 @@ def get_sur7_config():
     return config
 
 
+def get_sur11_config():
+    """Returns the surface code(L=7) configuration."""
+    config = ml_collections.ConfigDict()
+    config.patches = ml_collections.ConfigDict({'size': (3, 3)})  # 这里要改, 16->3
+    config.hidden_size = 768
+    config.transformer = ml_collections.ConfigDict()
+    config.transformer.mlp_dim = 3072
+    config.transformer.num_heads = 12
+    config.transformer.num_layers = 12
+    config.transformer.attention_dropout_rate = 0.0
+    config.transformer.dropout_rate = 0.1
+    config.classifier = 'token'
+    config.representation_size = None
+    return config
+
+
 def get_b16_config():
     """Returns the ViT-B/16 configuration."""
     config = ml_collections.ConfigDict()

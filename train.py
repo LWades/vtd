@@ -280,7 +280,7 @@ def main():
                         help="Which downstream task.")
     parser.add_argument("--model_type", choices=["ViT-B_16", "ViT-B_32", "ViT-L_16",
                                                  "ViT-L_32", "ViT-H_14", "R50-ViT-B_16",
-                                                 "Sur_3", "Sur_5", "Sur_7"],
+                                                 "Sur_3", "Sur_5", "Sur_7", "Sur_9", "Sur_11", "Sur_13"],
                         default="ViT-B_16",
                         help="Which variant to use.")
     parser.add_argument("--pretrained_dir", type=str, default="checkpoint/ViT-B_16.npz",
@@ -441,3 +441,4 @@ if __name__ == "__main__":
 # nohup python3 train.py --name sur-5-0.17-1x1-1e7-ep8 --dataset sur --model_type Sur_5 --epoch 8 --d 5 --p 0.170 --img_size 9 --fp16 --fp16_opt_level O2 > train_log/train_5_0.17_1x1_ep8.log &
 # nohup python3 train.py --name sur-3-0.01-1e7 --dataset sur --model_type Sur_3 --d 3 --p 0.01 --img_size 5 --eval_seed 1 --fp16 --fp16_opt_level O2 > logs/sur-3-0.01-1e7.log &
 # nohup python3 train.py --name sur-3-0.01-1e7 --dataset sur --model_type Sur_3 --d 3 --p 0.01 --epoch 5 --img_size 5 --eval_seed 1 --fp16 --fp16_opt_level O2 > logs/sur-3-0.01-1e7.log &
+# nohup python3 train.py --name sur-11-0.01-1e7 --dataset sur --model_type Sur_11 --d 11 --p 0.01 --epoch 7 --img_size 21 --gpu 1 --eval_seed 1 --fp16 --fp16_opt_level O2 > logs/sur-11-0.01-1e7.log &
