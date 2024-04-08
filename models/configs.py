@@ -79,7 +79,55 @@ def get_sur7_config():
     return config
 
 
+def get_sur9_config():
+    """Returns the surface code(L=7) configuration."""
+    config = ml_collections.ConfigDict()
+    config.patches = ml_collections.ConfigDict({'size': (2, 2)})  # 这里要改, 16->1
+    config.hidden_size = 768
+    config.transformer = ml_collections.ConfigDict()
+    config.transformer.mlp_dim = 3072
+    config.transformer.num_heads = 12
+    config.transformer.num_layers = 12
+    config.transformer.attention_dropout_rate = 0.0
+    config.transformer.dropout_rate = 0.1
+    config.classifier = 'token'
+    config.representation_size = None
+    return config
+
+
 def get_sur11_config():
+    """Returns the surface code(L=7) configuration."""
+    config = ml_collections.ConfigDict()
+    # config.patches = ml_collections.ConfigDict({'size': (2, 2)})  # 这里要改, 16->3
+    config.patches = ml_collections.ConfigDict({'size': (3, 3)})  # 这里要改, 16->3
+    config.hidden_size = 768
+    config.transformer = ml_collections.ConfigDict()
+    config.transformer.mlp_dim = 3072
+    config.transformer.num_heads = 12
+    config.transformer.num_layers = 12
+    config.transformer.attention_dropout_rate = 0.0
+    config.transformer.dropout_rate = 0.1
+    config.classifier = 'token'
+    config.representation_size = None
+    return config
+
+# def get_sur11_config():
+#     """Returns the surface code(L=7) configuration."""
+#     config = ml_collections.ConfigDict()
+#     config.patches = ml_collections.ConfigDict({'size': (3, 3)})  # Adjusted from (2, 2) to (3, 3)
+#     config.hidden_size = 1024  # Optionally increased for more capacity
+#     config.transformer = ml_collections.ConfigDict()
+#     config.transformer.mlp_dim = 4096  # Adjusted according to hidden_size
+#     config.transformer.num_heads = 16  # Adjusted for hidden_size
+#     config.transformer.num_layers = 12  # Kept the same, but consider increasing for deeper model
+#     config.transformer.attention_dropout_rate = 0.1  # Slightly increased if needed
+#     config.transformer.dropout_rate = 0.1  # Kept the same
+#     config.classifier = 'token'
+#     config.representation_size = None
+#     return config
+
+
+def get_sur13_config():
     """Returns the surface code(L=7) configuration."""
     config = ml_collections.ConfigDict()
     config.patches = ml_collections.ConfigDict({'size': (3, 3)})  # 这里要改, 16->3

@@ -91,6 +91,60 @@ def set_seed(args):
         torch.cuda.manual_seed_all(args.seed)
 
 
+def valids(args, model, test_loader):
+    # Validation!
+    eval_losses = AverageMeter()
+
+    logger.info("***** Running Validation *****")
+    logger.info("  Num steps = %d", len(test_loader))
+    logger.info("  Batch size = %d", args.eval_batch_size)
+
+    model.eval()
+    all_preds, all_label = [], []
+    epoch_iterator = tqdm(test_loader,
+                          desc="Validating... (loss=X.X)",
+                          bar_format="{l_bar}{r_bar}",
+                          dynamic_ncols=True,
+                          disable=args.local_rank not in [-1, 0])
+    loss_fct = torch.nn.CrossEntropyLoss()
+    for step, batch in enumerate(epoch_iterator):
+        batch = tuple(t.to(args.device) for t in batch)
+        x, y = batch
+        x = x.to(torch.float16)
+        y = y.to(torch.long)
+        y = torch.squeeze(y)
+        with torch.no_grad():
+            logits = model(x)[0]
+            # log(f"logits shape: {logits.shape}")
+            # log(f"y shape: {y.shape}")
+
+            eval_loss = loss_fct(logits, y)
+            eval_losses.update(eval_loss.item())
+
+            preds = torch.argmax(logits, dim=-1)
+
+        if len(all_preds) == 0:
+            all_preds.append(preds.detach().cpu().numpy())
+            all_label.append(y.detach().cpu().numpy())
+        else:
+            all_preds[0] = np.append(
+                all_preds[0], preds.detach().cpu().numpy(), axis=0
+            )
+            all_label[0] = np.append(
+                all_label[0], y.detach().cpu().numpy(), axis=0
+            )
+        epoch_iterator.set_description("Validating... (loss=%2.5f)" % eval_losses.val)
+
+    all_preds, all_label = all_preds[0], all_label[0]
+    accuracy = simple_accuracy(all_preds, all_label)
+
+    logger.info("\n")
+    logger.info("Validation Results")
+    logger.info("Valid Loss: %2.5f" % eval_losses.avg)
+    logger.info("Valid Accuracy: %2.5f" % accuracy)
+
+    return accuracy
+
 def valid(args, model, writer, test_loader, global_step):
     # Validation!
     eval_losses = AverageMeter()
@@ -355,7 +409,9 @@ def main():
             'physical error rate': args.p,
             'code type': args.c_type,
             'train size': args.trnsz,
-            'epoch': args.epoch
+            'epoch': args.epoch,
+            'hidden size': CONFIGS['Sur_{}'.format(args.d)].hidden_size,
+            'mlp_dim':  CONFIGS['Sur_{}'.format(args.d)].transformer.mlp_dim,
         }
     )
 
@@ -442,3 +498,10 @@ if __name__ == "__main__":
 # nohup python3 train.py --name sur-3-0.01-1e7 --dataset sur --model_type Sur_3 --d 3 --p 0.01 --img_size 5 --eval_seed 1 --fp16 --fp16_opt_level O2 > logs/sur-3-0.01-1e7.log &
 # nohup python3 train.py --name sur-3-0.01-1e7 --dataset sur --model_type Sur_3 --d 3 --p 0.01 --epoch 5 --img_size 5 --eval_seed 1 --fp16 --fp16_opt_level O2 > logs/sur-3-0.01-1e7.log &
 # nohup python3 train.py --name sur-11-0.01-1e7 --dataset sur --model_type Sur_11 --d 11 --p 0.01 --epoch 7 --img_size 21 --gpu 1 --eval_seed 1 --fp16 --fp16_opt_level O2 > logs/sur-11-0.01-1e7.log &
+# nohup python3 train.py --name sur-11-0.05-1e7 --dataset sur --model_type Sur_11 --d 11 --p 0.05 --epoch 8 --img_size 21 --gpu 1 --eval_seed 1 --fp16 --fp16_opt_level O2 > logs/sur-11-0.05-1e7.log &
+# nohup python3 train.py --name sur-11-0.10-1e7 --dataset sur --model_type Sur_11 --d 11 --p 0.10 --epoch 15 --img_size 21 --gpu 0 --eval_seed 1 --fp16 --fp16_opt_level O2 > logs/sur-11-0.10-1e7.log &
+# nohup python3 train.py --name sur-11-0.15-1e7 --dataset sur --model_type Sur_11 --d 11 --p 0.15 --epoch 17 --img_size 21 --gpu 0 --eval_seed 1 --fp16 --fp16_opt_level O2 > logs/sur-11-0.15-1e7.log &
+# nohup python3 train.py --name sur-9-0.15-1e7 --dataset sur --model_type Sur_9 --d 11 --p 0.15 --epoch 17 --img_size 21 --gpu 0 --eval_seed 1 --fp16 --fp16_opt_level O2 > logs/sur-11-0.15-1e7.log &
+# nohup python3 train.py --name sur-11-0.10-2x2-1e7 --dataset sur --model_type Sur_11 --d 11 --p 0.10 --epoch 17 --img_size 21 --gpu 0 --eval_seed 1 --fp16 --fp16_opt_level O2 > logs/sur-11-0.10-2x2-1e7.log &
+# nohup python3 train.py --name sur-11-0.10-2x2-1e7 --dataset sur --model_type Sur_11 --d 11 --p 0.10 --epoch 17 --img_size 21 --gpu 0 --eval_seed 1 --fp16 --fp16_opt_level O2 > logs/sur-11-0.10-2x2-1e7_2.log &
+# nohup python3 train.py --name sur-5-0.10-1x1-1e7 --dataset sur --model_type Sur_5 --d 5 --p 0.10 --epoch 20 --img_size 9 --gpu 1 --eval_seed 1 --fp16 --fp16_opt_level O2 > logs/sur-5-0.10-1x1-1e7_2.log &
